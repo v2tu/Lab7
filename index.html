@@ -85,6 +85,26 @@
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
         // TODO
+        document.getElementById("recordForm").style.display = "none";
+        document.getElementById("recordIDcontainer").style.display = "none";
+        let link = document.getElementById("endpoint").getAttribute("value");
+        fetch(link)
+          .then(
+            function(response) {
+              if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                  response.status);
+                return;
+               }
+
+              response.json().then(function(data) {
+                document.getElementById("output").innerHTML = JSON.stringify(data);
+              });
+            }
+          )
+          .catch(function(err) {
+            documemt.getElementById("output").innerHTML = "Fetch Error " + reponse.status;
+          });
       }
 
       // This function should fetch one entry from the given endpoint.
@@ -92,6 +112,27 @@
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
+        document.getElementById("recordForm").style.display = "none";
+        document.getElementById("recordIDcontainer").style.display = "none";
+        let id = window.prompt("Enter Record ID: ");
+        let link = document.getElementById("endpoint").getAttribute("value");
+        link = link + "/" + id;
+        fetch(link)
+          .then(
+            function(response) {
+              if (response.status !== 200) {
+                document.getElementById("output").innerHTML = "Network Error: " + response.status;
+                return;
+               }
+
+              response.json().then(function(data) {
+                document.getElementById("output").innerHTML = JSON.stringify(data);
+              });
+            }
+          )
+          .catch(function(err) {
+            documnet.getElementById("output").innerHTML = "Fetch Error " + reponse.status;
+          });
         // TODO
       }
 
@@ -100,6 +141,35 @@
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function createRecord() {
+        if(arguments[0] == "show")
+        {
+          document.getElementById("recordForm").style.display = "block";
+          document.getElementById("recordIDcontainer").style.display = "none";
+        }else{
+            let Newtitle = document.getElementById("title").value;
+            let Newauthor = document.getElementById("author").value;
+            let link = document.getElementById("endpoint").getAttribute("value");
+            fetch(link, {
+              method: "POST",
+
+              body: JSON.stringify({
+                author: Newauthor,
+                title: Newtitle,
+              }),
+
+              headers: {
+                "Content-type": "application/json; charset=UTF-8"
+              }
+            }) 
+            .then(response => response.json())
+            .then(function(data){
+              document.getElementById("output").innerHTML = JSON.stringify(data);
+            })
+            .catch(function(error){
+              document.getElementById("output").innerHTML = "Request failed" + response.status;
+            })
+          }
+      
         // TODO
       }
 
@@ -109,6 +179,37 @@
       // the writeup to view the URL pattern for create and update
       function updateRecord() {
         // TODO
+        if(arguments[0] == "show")
+        {
+          document.getElementById("recordForm").reset();
+          document.getElementById("recordForm").style.display = "block";
+          document.getElementById("recordIDcontainer").style.display = "block";
+        }else{
+            let Newtitle = document.getElementById("title").value;
+            let Newauthor = document.getElementById("author").value;
+            let NewId = document.getElementById("recordID").value;
+            let link = document.getElementById("endpoint").getAttribute("value") + "/" + NewId;
+            fetch(link, {
+              method: "PUT",
+
+              body: JSON.stringify({
+                author: Newauthor,
+                title: Newtitle,
+                id: NewId
+              }),
+
+              headers: {
+                "Content-type": "application/json; charset=UTF-8"
+              }
+            }) 
+            .then(response => response.json())
+            .then(function(data){
+              document.getElementById("output").innerHTML = JSON.stringify(data);
+            })
+            .catch(function(error){
+              document.getElementById("output").innerHTML = "Request failed" + response.status;
+            })
+          }
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
@@ -118,6 +219,21 @@
       // delete all, only delete one.
       function deleteRecord() {
         // TODO
+        document.getElementById("recordForm").style.display = "none";
+        document.getElementById("recordIDcontainer").style.display = "none";
+        let id = window.prompt("Enter Record ID: ");
+        let link = document.getElementById("endpoint").getAttribute("value");
+        link = link + "/" + id;
+        fetch(link, {
+          method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(function(data){
+          document.getElementById("output").innerHTML = JSON.stringify(data);
+        })
+        .catch(function(error){
+          document.getElementById("output").innerHTML = "Request failed";
+        })
       }
 
       window.addEventListener('DOMContentLoaded', () => {
